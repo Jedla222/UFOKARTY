@@ -979,12 +979,27 @@ html, body { overscroll-behavior: contain !important; }
         <h1 class="prekladatelny" data-cs="Vítají Vás UFOKARTY" data-en="Welcome to UFOCARDS" style="font-size: 3em; color: #c5a059; margin: 0 0 15px 0; text-shadow: 2px 2px 4px rgba(0,0,0,0.6); font-weight: 800;">Vítají Vás UFOKARTY</h1>
         <p class="prekladatelny" data-cs="Vyberte počet hráčů pro nadcházející turnaj:" data-en="Select the number of players for the upcoming tournament:" style="font-size: 1.2em; font-style: italic; margin: 0 0 30px 0; color: #e4dcc4;">Vyberte počet hráčů pro nadcházející turnaj:</p>
         
-        <div class="player-buttons" style="display: flex; justify-content: center; gap: 15px; flex-wrap: wrap;">
-            <button onclick="startGameWithPlayers(2)" style="background: linear-gradient(#5a3825, #2e1a0f); color: #c5a059; border: 1px solid #c5a059; padding: 12px 24px; font-family: 'Cinzel', serif; font-size: 1.2em; font-weight: bold; border-radius: 4px; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.3);"><span class="prekladatelny" data-cs="2 Hráči" data-en="2 Players">2 Hráči</span></button>
-            <button onclick="startGameWithPlayers(3)" style="background: linear-gradient(#5a3825, #2e1a0f); color: #c5a059; border: 1px solid #c5a059; padding: 12px 24px; font-family: 'Cinzel', serif; font-size: 1.2em; font-weight: bold; border-radius: 4px; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.3);"><span class="prekladatelny" data-cs="3 Hráči" data-en="3 Players">3 Hráči</span></button>
-            <button onclick="startGameWithPlayers(4)" style="background: linear-gradient(#5a3825, #2e1a0f); color: #c5a059; border: 1px solid #c5a059; padding: 12px 24px; font-family: 'Cinzel', serif; font-size: 1.2em; font-weight: bold; border-radius: 4px; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.3);"><span class="prekladatelny" data-cs="4 Hráči" data-en="4 Players">4 Hráči</span></button>
-            <button onclick="startGameWithPlayers(5)" style="background: linear-gradient(#5a3825, #2e1a0f); color: #c5a059; border: 1px solid #c5a059; padding: 12px 24px; font-family: 'Cinzel', serif; font-size: 1.2em; font-weight: bold; border-radius: 4px; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.3);"><span class="prekladatelny" data-cs="5 Hráčů" data-en="5 Players">5 Hráčů</span></button>
-        </div>
+        <div class="setup-group" style="margin-bottom: 20px;">
+    <div class="setup-label">
+        <span class="prekladatelny" data-cs="POČET ÚČASTNÍKŮ" data-en="NUMBER OF PLAYERS"style="color: #f4ecd8; font-weight: bold; margin-right: 10px;">Hrát do počtu bodů:</label>
+    </div>
+    <div class="setup-control">
+        <!-- 🔥 TADY JE TO ID: id="player-count-select" -->
+        <select id="player-count-select" style="background: #2e1a0f; color: #c5a059; border: 1px solid #c5a059; padding: 8px 15px; font-size: 0.9em; font-weight: bold; border-radius: 4px; cursor: pointer; font-family: 'Cinzel', serif;">
+            <option value="2" style="background-color: #2e1a0f; color: #c5a059;">2 HRÁČI</option>
+            <option value="3" style="background-color: #2e1a0f; color: #c5a059;">3 HRÁČI</option>
+            <option value="4" style="background-color: #2e1a0f; color: #c5a059;">4 HRÁČI</option>
+            <option value="5" selected style="background-color: #2e1a0f; color: #c5a059;">5 HRÁČŮ</option>
+        </select>
+    </div>
+</div>
+
+<!-- Hlavní tlačítko turnaje (musí mít třídu start-btn pro online režim) -->
+<div style="margin-top: 30px; text-align: center;">
+    <button class="menu-btn start-btn" onclick="spustitHruZMenu()" style="background: linear-gradient(#5a3825, #2e1a0f); color: #c5a059; border: 1px solid #c5a059; padding: 15px 40px; font-family: 'Cinzel', serif; font-size: 1.4em; font-weight: bold; border-radius: 4px; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.3); letter-spacing: 1px;">
+        <span class="prekladatelny" data-cs="SPUSTIT TURNAJ" data-en="START TOURNAMENT">SPUSTIT TURNAJ</span>
+    </button>
+</div>
 
         <!-- Nastavení bodů -->
         <div style="margin-top: 25px; font-size: 1.3em; font-family: 'Georgia', serif;">
@@ -1415,9 +1430,16 @@ function prepniRezim(hodnota) {
 
 async function pripojSeOnline(roomId, adminPass, nastaveniTurnaje) {
     try {
-        addToLog("🌐 Připojuji se k online herní místnosti...");
+        // 🔧 VIZUÁLNÍ AKTIVACE JEDNOHO TLAČÍTKA START:
+        const startBtn = document.querySelector('.start-btn');
+        if (startBtn) {
+            startBtn.innerText = "PŘIPOJOVÁNÍ...";
+            startBtn.disabled = true; // Zamezíme nechtěnému dvojímu kliknutí
+        }
 
-        // 1. Inicializace Playroomu přes internet
+        addToLog(`🌐 Připojuji se k online stolu ${roomId}...`);
+
+        // 1. Inicializace bezplatného Playroom cloudu přes internet
         await Playroom.insertCoin({
             gameId: "ufokarty-728-jedla", 
             discord: false,
@@ -1426,20 +1448,29 @@ async function pripojSeOnline(roomId, adminPass, nastaveniTurnaje) {
 
         addToLog("✅ Úspěšně připojeno k online stolu!");
         
-        let mujHrac = Playroom.myPlayer();
-        mujHrac.setState("jmeno", "Hráč 1");
-        
-        let isAdmin = (adminPass === "2222");
-        mujHrac.setState("isAdmin", isAdmin);
+        // Změníme text na tlačítku na čekací stav pro kamaráda
+        if (startBtn) startBtn.innerText = "ČEKÁ SE NA SOUPEŘE...";
 
-        if (isAdmin) {
-            addToLog("👑 Přihlášen jako ADMIN. Panel záchodových sviňáren aktivován.");
+        let mujHrac = Playroom.myPlayer();
+        if (mujHrac) {
+            mujHrac.setState("jmeno", "Hráč 1");
+            
+            // KONTROLA ADMIN HESLA: Vaše heslo je nyní bezpečně nastaveno na "2222"
+            let isAdmin = (adminPass === "2222");
+            mujHrac.setState("isAdmin", isAdmin);
+
+            if (isAdmin) {
+                addToLog("👑 Přihlášen jako ADMIN. Panel záchodových sviňáren aktivován.");
+            }
         }
 
+        // Pokud jste v místnosti první, stáváte se Hostitelem a řídíte míchání karet
         if (Playroom.isHost()) {
             Playroom.setGameState("nastaveni", nastaveniTurnaje);
             Playroom.setGameState("naRade", 0);
-            addToLog("🎲 Jsi hostitel stolu. Čekám na synchronizaci balíčku...");
+            addToLog("🎲 Jsi hostitel stolu. Spouštím dokonalé míchání karet...");
+            
+            // Vyvoláme míchání balíčku ve vaší funkci initGame()
             initGame(); 
         }
 
@@ -1484,7 +1515,7 @@ async function pripojSeOnline(roomId, adminPass, nastaveniTurnaje) {
                 }
             }
 
-            // Spuštění vaší původní logiky turnaje
+            // Spuštění vaší původní turnajové logiky
             drawAction(spravnyIndexHrace);
 
             isOnlineRezim = zalohaOnline; 
@@ -1496,6 +1527,13 @@ async function pripojSeOnline(roomId, adminPass, nastaveniTurnaje) {
 
     } catch (chyba) {
         alert("Chyba při připojování k online hře: " + chyba);
+        
+        // V případě chyby sítě vrátíme tlačítko zpět do klikatelného stavu
+        const startBtn = document.querySelector('.start-btn');
+        if (startBtn) {
+            startBtn.innerText = "SPUSTIT TURNÁJ";
+            startBtn.disabled = false;
+        }
     }
 }
 
@@ -1895,6 +1933,20 @@ function prehrajZvukModalu() {
         audio.currentTime = 0;
         audio.play().catch(e => {});
     }
+}
+
+function spustitHruZMenu() {
+    // Kód bezpečně vytáhne číslo z opraveného selectu
+    const selectHracu = document.getElementById('player-count-select');
+    if (!selectHracu) {
+        alert("Chyba: Prvek pro výběr hráčů nebyl v HTML nalezen!");
+        return;
+    }
+    const zvolenyPocet = parseInt(selectHracu.value) || 3;
+    
+    console.log(`Spouštím turnaj z menu pro počet hráčů: ${zvolenyPocet}`);
+    // Předáme vybrané číslo vaší původní funkci, jako to dělala stará tlačítka
+    startGameWithPlayers(zvolenyPocet);
 }
 
 function startGameWithPlayers(chosenCount) {
