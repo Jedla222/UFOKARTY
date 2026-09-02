@@ -11,7 +11,11 @@
 <link href="https://googleapis.com/css2?family=Cinzel:wght@400;700;800&display=swap" rel="stylesheet">
 
 <!-- 🌐 SÍŤOVÝ KABEL: Propojení pro online hru a synchronizaci Cheat Panelu -->
-    <script src="https://unpkg.com"></script>
+    <script type="module">
+    import * as PlayroomKit from "https://unpkg.com";
+    window.Playroom = PlayroomKit;
+    console.log("🛸 Síťový kabel Playroom byl úspěšně vnitřně aktivován!");
+</script>
 
     <style>
 html, body { overscroll-behavior: contain !important; }
@@ -1429,7 +1433,7 @@ async function pripojSeOnline(roomId, adminPass, nastaveniTurnaje) {
         let mujHrac = Playroom.myPlayer();
         mujHrac.setState("jmeno", "Hráč 1");
         
-        let isAdmin = (adminPass === "mojeTajneHeslo728");
+        let isAdmin = (adminPass === "2222");
         mujHrac.setState("isAdmin", isAdmin);
 
         if (isAdmin) {
