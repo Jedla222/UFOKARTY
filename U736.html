@@ -1436,76 +1436,71 @@ async function pripojSeOnline(roomId, adminPass, nastaveniTurnaje) {
             startBtn.disabled = true;
         }
 
-        // Základní konfigurace pro Playroom
-        let konfigurace = {
+        // 1. Připojení do sítě (pokud roomId chybí, Playroom vygeneruje nový kód)
+        await Playroom.insertCoin({
             gameId: "ufokarty-728-jedla", 
             discord: false,
-            skipLobby: true // Používáš své vlastní HTML menu
-        };
+            roomCode: roomId ? roomId.trim() : undefined,
+            skipLobby: true 
+        });
 
-        // 🌟 TADY JE TEN KLÍČOVÝ ROZDÍL:
-        if (roomId && roomId.trim() !== "") {
-            // Kamarád vyplnil kód -> připojujeme ho do tvé místnosti
-            konfigurace.roomCode = roomId.trim();
-            addToLog(`🌐 Připojuji se k existujícímu stolu: ${roomId}...`);
-        } else {
-            // Ty jsi nechal kód prázdný -> zakládáš zbrusu nový stůl
-            addToLog(`👑 Zakládám nový online stůl na serveru jako ADMIN...`);
-            // Výslovně smažeme roomCode, aby ho Playroom vygeneroval sám!
-            delete konfigurace.roomCode; 
-        }
+        // Ukážeme vygenerovaný kód (např. do logu nebo konzole)
+        let skutecnyKod = Playroom.getRoomCode();
+        addToLog(`✅ Připojeno! Kód stolu: ${skutecnyKod}`);
+        console.log("Tvůj kód místnosti je:", skutecnyKod);
 
-        // Spuštění síťového připojení k Playroom Cloudu
-        await Playroom.insertCoin(konfigurace);
+        if (startBtn) startBtn.innerText = "ČEKÁNÍ NA SOUPEŘE...";
 
-        // 📡 KROK, KTERÝ TI CHYBĚL: Získání kódu, který server reálně vytvořil
-        let vygenerovanyKodZServeru = Playroom.getRoomCode();
-        
-        // Vypíšeme kód do logu a do konzole, aby ses ho dozvěděl!
-        addToLog(`✅ Úspěšně připojeno! Kód tohoto stolu je: **${vygenerovanyKodZServeru}**`);
-        console.log("KÓD PRO KAMARÁDY JE:", vygenerovanyKodZServeru);
-
-        // Volitelné: Pokud máš v HTML nějaký element (např. <div id="kod-stolu">), 
-        // můžeš ten vygenerovaný kód ukázat na obrazovce, aby ti ho viděl:
-        // document.getElementById("kod-stolu").innerText = vygenerovanyKodZServeru;
-
-        if (startBtn) startBtn.innerText = "ČEKÁ SE NA SOUPEŘE...";
-
-        // Nastavení tvého hráče
+        // Nastavení lokálního hráče
         let mujHrac = Playroom.myPlayer();
         if (mujHrac) {
             mujHrac.setState("jmeno", "Hráč 1");
             let isAdmin = (adminPass === "2222" || Playroom.isHost());
             mujHrac.setState("isAdmin", isAdmin);
+        }
 
-            if (isAdmin) {
-                addToLog("👑 Přihlášen jako ADMIN. Panel záchodových sviňáren aktivován.");
+        // =========================================================================
+        // 🌟 TADY JE TEN SKUTEČNÝ FIX: Čekáme, až se připojí druhý hráč!
+        // =========================================================================
+        Playroom.onPlayerJoin((novyHrac) => {
+            addToLog(`👋 Do místnosti vstoupil hráč: ${novyHrac.id}`);
+
+            // Zjistíme, kolik lidí už sedí u stolu
+            let všichniHráči = Playroom.getPlayers();
+            
+            // Jsi hostitel a u stolu už sedí alespoň 2 lidé? TEPRVE TEĎ spustíme hru!
+            if (Playroom.isHost() && Object.keys(všichniHráči).length >= 2) {
+                addToLog("🎲 Všichni jsou tady! Hostitel míchá karty a startuje hru...");
+                
+                Playroom.setGameState("nastaveni", nastaveniTurnaje);
+                Playroom.setGameState("naRade", 0);
+                
+                // Synchronizovaně spustíme hru pro VŠECHNY lidi u stolu najednou
+                Playroom.setGameState("hraZacala", true);
+                initGame(); 
             }
-        }
+        });
 
-        // Pokud jsi stůl založil ty, jsi Hostitel a mícháš karty
-        if (Playroom.isHost()) {
-            Playroom.setGameState("nastaveni", nastaveniTurnaje);
-            Playroom.setGameState("naRade", 0);
-            addToLog("🎲 Jsi hostitel stolu. Spouštím dokonalé míchání karet...");
-            initGame(); 
-        }
+        // Hlídač pro druhého hráče (aby poznal, že hostitel už odstartoval hru)
+        Playroom.onStateChange("hraZacala", (stav) => {
+            if (stav === true && !Playroom.isHost()) {
+                addToLog("🚀 Hostitel spustil hru! Načítám karty...");
+                initGame();
+            }
+        });
 
         // =========================================================================
-        // SÍŤOVÉ PŘIJÍMAČE (Tvoje původní RPC zůstávají beze změny...)
+        // SÍŤOVÉ PŘIJÍMAČE (Tvoje RPC zůstávají beze změny)
         // =========================================================================
-        Playroom.onRpc("provedOnlineLiznuti", (data, hracKteryLizal) => { /* ... tvoje logika ... */ });
-        Playroom.onRpc("provedVizuálníLiznutiVHtml", (data, hracKteryLizal) => { /* ... tvoje logika ... */ });
+        Playroom.onRpc("provedOnlineLiznuti", (data, hracKteryLizal) => { /* ... tvoje ... */ });
+        Playroom.onRpc("provedVizuálníLiznutiVHtml", (data, hracKteryLizal) => { /* ... tvoje ... */ });
 
         sledujStavWeboveHry();
 
     } catch (chyba) {
-        alert("Chyba při připojování k online hře: " + chyba);
+        alert("Chyba při připojování: " + chyba);
         const startBtn = document.querySelector('.start-btn');
-        if (startBtn) {
-            startBtn.innerText = "SPUSTIT TURNAJ";
-            startBtn.disabled = false;
-        }
+        if (startBtn) { startBtn.innerText = "SPUSTIT TURNAJ"; startBtn.disabled = false; }
     }
 }
 
