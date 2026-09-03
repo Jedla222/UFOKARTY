@@ -1436,29 +1436,48 @@ async function pripojSeOnline(roomId, adminPass, nastaveniTurnaje) {
             startBtn.disabled = true;
         }
 
-        addToLog(`🌐 Inicializuji multiplayer Playroom...`);
+        // 🔍 KROK 1: Kontrola, zda už máme kód v URL adrese (připojuje se kamarád)
+        // Playroom standardně dává kód do parametru 'r' (např. ?r=ABCD)
+        const urlParams = new URLSearchParams(window.location.search);
+        let nactenyKodMistnosti = urlParams.get('r') || roomId; 
 
-        // 1. Správná inicializace vestavěného Playroom lobby
-        await Playroom.insertCoin({
-    gameId: "ufokarty-728-jedla", 
-    discord: false,
-    roomCode: roomId, // Ponecháme tvůj roomId
-    skipLobby: true   // 🌟 KLÍČOVÝ FIX: Playroom přeskočí své UI a hned vás spojí online
-});
+        // Konfigurace pro Playroom
+        let konfigurace = {
+            gameId: "ufokarty-728-jedla", 
+            discord: false,
+            skipLobby: true // Chceme tvoje vlastní HTML, ne fialové okno
+        };
 
-        // 2. KÓD SEM DOBĚHNE AŽ POTÉ, CO HOSTIK KLIKNE NA "LAUNCH" V LOBBY!
-        addToLog("✅ Úspěšně připojeno a hra byla spuštěna z lobby!");
-        
-        if (startBtn) startBtn.innerText = "HRA BĚŽÍ";
+        // Pokud kód máme (z URL nebo z inputu), řekneme Playroomu: "Připoj nás tam"
+        if (nactenyKodMistnosti) {
+            konfigurace.roomCode = nactenyKodMistnosti;
+            addToLog(`🌐 Připojuji se k existujícímu stolu: ${nactenyKodMistnosti}...`);
+        } else {
+            addToLog(`👑 Zakládám nový online stůl jako ADMIN...`);
+        }
 
-        // Nastavení dat pro lokálního hráče
+        // ⚙️ KROK 2: Spuštění Playroom síťového cloudu
+        await Playroom.insertCoin(konfigurace);
+
+        // 📡 KROK 3: Získání skutečného kódu místnosti, který vygeneroval server
+        let skutecnyKod = Playroom.getRoomCode();
+        addToLog(`✅ Úspěšně připojeno! Kód stolu je: **${skutecnyKod}**`);
+
+        // ZÁSADNÍ FIX PRO ADMINA: Pokud jsi stůl založil, musíme změnit URL adresu,
+        // aby v ní byl ten vygenerovaný kód pro tvé kamarády!
+        if (!window.location.search.includes('r=')) {
+            const novaUrl = window.location.protocol + "//" + window.location.host + window.location.pathname + `?r=${skutecnyKod}`;
+            window.history.pushState({ path: novaUrl }, '', novaUrl);
+            addToLog(`🔗 Odkaz pro kamarády byl aktualizován v adresním řádku!`);
+        }
+
+        if (startBtn) startBtn.innerText = "ČEKÁ SE NA SOUPEŘE...";
+
+        // Nastavení hráče
         let mujHrac = Playroom.myPlayer();
         if (mujHrac) {
-            // Použijeme přezdívku, kterou si hráč sám zvolil v Playroom lobby
-            let zvoleneJmeno = mujHrac.getProfile().name || "Hráč";
-            mujHrac.setState("jmeno", zvoleneJmeno);
-            
-            let isAdmin = (adminPass === "2222");
+            mujHrac.setState("jmeno", "Hráč 1");
+            let isAdmin = (adminPass === "2222" || Playroom.isHost()); // Admin jsi, pokud znáš heslo nebo jsi zakladatel
             mujHrac.setState("isAdmin", isAdmin);
 
             if (isAdmin) {
@@ -1466,24 +1485,56 @@ async function pripojSeOnline(roomId, adminPass, nastaveniTurnaje) {
             }
         }
 
-        // Spuštění inicializace stolu (pouze hostitel míchá)
+        // KROK 4: Hostitel inicializuje hru
         if (Playroom.isHost()) {
             Playroom.setGameState("nastaveni", nastaveniTurnaje);
             Playroom.setGameState("naRade", 0);
             addToLog("🎲 Jsi hostitel stolu. Spouštím dokonalé míchání karet...");
-            
             initGame(); 
         }
 
         // =========================================================================
-        // 📡 SÍŤOVÉ PŘIJÍMAČE (Zůstávají beze změny)
+        // 📡 SÍŤOVÉ PŘIJÍMAČE (Tvůj nezměněný kód)
         // =========================================================================
         Playroom.onRpc("provedOnlineLiznuti", (data, hracKteryLizal) => {
-            // ... tvůj stávající kód RPC přijímačů ...
+            if (Playroom.isHost()) {
+                let spolecnyBalicek = Playroom.getGameState("spolechnyBalicek") || [];
+                if (spolecnyBalicek.length === 0) return;
+
+                let liznutaKarta = spolecnyBalicek.pop();
+                let onlineKartyHrace = hracKteryLizal.getState("mojeKarty") || [];
+                onlineKarlyHrace.push(liznutaKarta);
+                hracKteryLizal.setState("mojeKarty", onlineKartyHrace);
+
+                Playroom.setGameState("spolechnyBalicek", spolecnyBalicek);
+
+                Playroom.rpc("provedVizuálníLiznutiVHtml", {
+                    hracId: hracKteryLizal.id,
+                    karta: liznutaKarta
+                });
+            }
         });
 
         Playroom.onRpc("provedVizuálníLiznutiVHtml", (data, hracKteryLizal) => {
-            // ... tvůj stávající kód RPC přijímačů ...
+            let mujPlayroomHrac = Playroom.myPlayer();
+            if (!mujPlayroomHrac || !hracKteryLizal) return;
+
+            let jeToMojeLiznuti = hracKteryLizal.id === mujPlayroomHrac.id;
+            let spravnyIndexHrace = jeToMojeLiznuti ? 0 : UrciIndexOstatnichHracu(hracKteryLizal.id);
+
+            let zalohaOnline = isOnlineRezim;
+            isOnlineRezim = false;
+
+            if (jeToMojeLiznuti) {
+                if (typeof window.playersHand !== 'undefined') window.playersHand.push(data.karta);
+            } else {
+                if (typeof players !== 'undefined' && players[spravnyIndexHrace]) {
+                    players[spravnyIndexHrace].hand.push(data.karta);
+                }
+            }
+
+            drawAction(spravnyIndexHrace);
+            isOnlineRezim = zalohaOnline; 
         });
 
         sledujStavWeboveHry();
