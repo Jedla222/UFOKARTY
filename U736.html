@@ -1440,10 +1440,11 @@ async function pripojSeOnline(roomId, adminPass, nastaveniTurnaje) {
 
         // 1. Správná inicializace vestavěného Playroom lobby
         await Playroom.insertCoin({
-            gameId: "ufokarty-728-jedla", 
-            discord: false
-            // roomCode úplně smažeme. Playroom si kód místnosti z URL vytáhne sám!
-        });
+    gameId: "ufokarty-728-jedla", 
+    discord: false,
+    roomCode: roomId, // Ponecháme tvůj roomId
+    skipLobby: true   // 🌟 KLÍČOVÝ FIX: Playroom přeskočí své UI a hned vás spojí online
+});
 
         // 2. KÓD SEM DOBĚHNE AŽ POTÉ, CO HOSTIK KLIKNE NA "LAUNCH" V LOBBY!
         addToLog("✅ Úspěšně připojeno a hra byla spuštěna z lobby!");
