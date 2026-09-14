@@ -986,10 +986,10 @@ html, body { overscroll-behavior: contain !important; }
     <div class="setup-control">
         <!-- 🔥 TADY JE TO ID: id="player-count-select" -->
         <select id="player-count-select" style="background: #2e1a0f; color: #c5a059; border: 1px solid #c5a059; padding: 8px 15px; font-size: 0.9em; font-weight: bold; border-radius: 4px; cursor: pointer; font-family: 'Cinzel', serif;">
-            <option value="2" style="background-color: #2e1a0f; color: #c5a059;">2 HRÁČI</option>
-            <option value="3" style="background-color: #2e1a0f; color: #c5a059;">3 HRÁČI</option>
-            <option value="4" style="background-color: #2e1a0f; color: #c5a059;">4 HRÁČI</option>
-            <option value="5" selected style="background-color: #2e1a0f; color: #c5a059;">5 HRÁČŮ</option>
+            <option value="2" class="prekladatelny" data-cs="2 HRÁČI" data-en="2 PLAYERS" style="background-color: #2e1a0f; color: #c5a059;">2 HRÁČI</option>
+            <option value="3" class="prekladatelny" data-cs="3 HRÁČI" data-en="3 PLAYERS" style="background-color: #2e1a0f; color: #c5a059;">3 HRÁČI</option>
+            <option value="4" class="prekladatelny" data-cs="4 HRÁČI" data-en="4 PLAYERS" style="background-color: #2e1a0f; color: #c5a059;">4 HRÁČI</option>
+            <option value="5" selected class="prekladatelny" data-cs="5 HRÁČŮ" data-en="5 PLAYERS" style="background-color: #2e1a0f; color: #c5a059;">5 HRÁČŮ</option>
         </select>
     </div>
 </div>
@@ -1393,6 +1393,7 @@ const ufoSlovnicekAlerteu = {
     "Nemůžeš lízat, balíček je prázdný!": "Cannot draw, the deck is empty!",
     "Tento tah nemůžeš provést.": "You cannot make this move.",
     "Na řadě je bot.": "It's the bot's turn.",
+"Celkem se u stolu vyžahlo": "The table was completely burned out",
     "Konec kola!": "End of round!"
 };
 
@@ -1998,8 +1999,20 @@ function startSwap(forcedIdx = null) {
     if (btn) btn.style.display = 'none';
     isSwapSelection = true;
     
-    // Upravíme text nápovědy podle toho, kdo akci vyvolal
-    document.getElementById('hint-text').innerHTML = `<b style='color:var(--white)'>VÝMĚNA KARET!!! ${players[kdotomastiIdx].name} MĚNÍ. VYBER KARTU Z RUKY A POŠLI VPRAVO.</b>`;
+    // =========================================================================
+    // 🌐 BLESKOVÝ PŘEKLAD NÁPOVĚDY PRO VÝMĚNU (ČLOVĚK I BOT)
+    // =========================================================================
+    // 1. Zjistíme vybraný jazyk z paměti
+    const aktuJazyk = localStorage.getItem('ufoHerniJazyk') || 'cs';
+    
+    // 2. Podle jazyka sestavíme správnou větu se jménem hráče
+    const textVymeny = (aktuJazyk === 'en') 
+        ? `CARD SWAP!!! ${players[kdotomastiIdx].name} IS SWAPPING. SELECT A CARD FROM YOUR HAND AND SEND IT RIGHT.`
+        : `VÝMĚNA KARET!!! ${players[kdotomastiIdx].name} MĚNÍ. VYBER KARTU Z RUKY A POŠLI VPRAVO.`;
+
+    // 3. Vložíme bezpečně do HTML (bílá barva i styl zůstanou netknuté)
+    document.getElementById('hint-text').innerHTML = `<b style='color:var(--white)'>${textVymeny}</b>`;
+    
     updateUI();
 }
 
@@ -2875,7 +2888,7 @@ function updateUI() {
             hintHTML += `<b style="color:var(--brown)"> HRAJ HOVNO:</b> ${mini(activeEffect, '💩')} / ${mini(aktualniNula,'0')}`;
         }
         else {
-            hintHTML += `<span style="color:#00ff00;"> VOLNÝ TAH, HRAJ CO CHCEŠ</span>`;
+            hintHTML += `<span style="color:#00ff00;"> VOLNÝ TAH, HRAJ CO CHCEŠ!</span>`;
     }
     
     if (!isSwapSelection) {
@@ -2893,6 +2906,9 @@ function updateUI() {
                 "STOJÍŠ:": "SKIP:",
                 "HRAJ HOVNO:": "PLAY POOP:",
                 "Kolo:": "Round:",
+"VÍTĚZ": "WINNER",
+"HRAJ CO CHCEŠ": "PLAY ANYTHING",
+"NASRAT!": "FUCK OFF!",
                 "VOLNÝ TAH": "FREE TURN"
             };
 
@@ -3317,7 +3333,7 @@ function showRules() {
                     
 			</li>
                     <li>
-                        <strong style="color: #ffcc00;">🔥 <span class="prekladatelny" data-cs="Kombo:" data-en="Builder:">Kombo:</span></strong> 
+                        <strong style="color: #ffcc00;">🔥 <span class="prekladatelny" data-cs="Kombo:" data-en="Combo:">Kombo:</span></strong> 
                         <span class="prekladatelny" data-cs="MIX TOP 5! Kombinace všech výše zmíněných pivních režimů. Režim funguje stejně, ovšem obsahuje vždy 4 režimy po stejné frekvenci loku od každého režimu. Hráč musí postupně likvidovat všechny 4 hladinky a využít všech výhod nebo trestů ve svůj prospěch. Teprve až vypije všechny hladinky získá nový nášup v podobě 4 orosených nových kousků. Vyvolat volbu MÓDU můžete před svým tahem opětovným stisknutím tlačítka nápovědy(?), případně ▶/⏸." data-en="MIX TOP 5! For each beer chugged, the game pauses to open a limited pool of 60 cards. You pick a real card that will be guaranteed into your hand at the start of the next round.">Strategické plánování! Za každé exnuté pivo se hra zmrazí a otevře se limitovaný stavařský fond 60 kusů karet. Vyberete si reálnou kartu, která vám bude garantovaně rozdána do ruky na startu příštího herního kola.</span>
                     </li>
                 </ul>
@@ -3595,7 +3611,7 @@ function executeMove(pIdx, cardIdx) {
 		`🧳 <b>${players[pIdx].name}</b> sbalil celé pivo na jeden lok a u stolu hlásí: „Tohle jenom zahučelo, přines hned další!“`,
 		`🧬 <b>${players[pIdx].name}</b> má lásku k pivu prostě v DNA. Dopil do poslední kapky a na tácek mu okamžitě letí čerstvá pěna.`,
 		`🏁 <b>${players[pIdx].name}</b> proťal cílovou pásku! Půllitr je čistý jako slovo boží a vrchní už nese další orosenou odměnu.`,
-		`👑 <b>${players[pIdx].name}</b> potvrdil status krále výčepu. Prázdný krígl prásknul o stůl a křičí: „Nenechávejte mě sušit!“`
+		`👑 <b>${players[pIdx].name}</b> potvrdil status císaře výčepu. Prázdný krígl prásknul o stůl a křičí: „Nenechávejte mě sušit!“`
             ];
             
             const nahodnaHlaska = hlasky[Math.floor(Math.random() * hlasky.length)];
@@ -4044,7 +4060,7 @@ function executeMove(pIdx, cardIdx) {
                     alert(players[pIdx].name + " končil Lízátkem bez Smajlíka! Lízá 1 kartu.");
                 } else {
                     // Pro bota pouze bleskově zapíšeme luxusní červenou zprávu do historie akcí
-                    addToLog(`<span style="color: var(--red, #e94560); font-weight: bold;">⚠️ Bot <b>${players[pIdx].name}</b> se pokusil ukončit kolo Lízátkem bez Smajlíka! Lízá 1 trestnou kartu.</span>`);
+                    addToLog(`<span style="color: var(--red, #e94560); font-weight: bold;">⚠️<b>${players[pIdx].name}</b> se pokusil ukončit kolo Lízátkem bez Smajlíka! Lízá 1 trestnou kartu.</span>`);
                 }
                 
                 updateUI();
@@ -5159,8 +5175,18 @@ function botTurn() {
             swapUsed = true;
             if (!players[0].out && players[0].hand.length > 0) {
                 isSwapSelection = true;
-                document.getElementById('hint-text').innerHTML = 
-                    `<b style='color:var(--white)'>NASRAT! ${p.name.toUpperCase()} CHCE MĚNIT! VYBER KARTU A POŠLI VPRAVO.</b>`;
+                
+                // =========================================================================
+                // 🌐 BLESKOVÝ PŘEKLAD NÁPOVĚDY PRO BOTA (Při výzvě k výměně karet)
+                // =========================================================================
+                const aktuJazyk = localStorage.getItem('ufoHerniJazyk') || 'cs';
+                
+                const textVymeny = (aktuJazyk === 'en') 
+                    ? `FUCK THAT! ${p.name.toUpperCase()} WANTS TO SWAP! SELECT A CARD AND SEND IT RIGHT.`
+                    : `NASRAT! ${p.name.toUpperCase()} CHCE MĚNIT! VYBER KARTU A POŠLI VPRAVO.`;
+
+                document.getElementById('hint-text').innerHTML = `<b style='color:var(--white)'>${textVymeny}</b>`;
+                
                 botThinking = false;
                 return;
             } else {
@@ -5244,32 +5270,51 @@ function botTurn() {
 }
 
 const ufoLogTranslations = {
-    // Hlavní systémové hlášky
-    "Hra spuštěna...": "Game started...",
+    // 1. NEJPRVE CELÉ STATICKÉ HLÁŠKY (Musí být nahoře, aby se split provedl jako první)
+"HISTORIE AKCÍ HRÁČŮ": "HISTORY OF PLAYER ACTIONS",
+    "Hra spuštěna...": "Game started. . .",
     "🎮 Turnaj zahájen! Hrajeme v": "🎮 Tournament started! Playing with",
-    "lidech do": "players up to",
-    "bodů. Rozdává se": "points. Dealing",
     "karet.": "cards.",
     "⚙️ Kolo č.": "⚙️ Round No.",
-    "V balíčku je": "In the deck there are",
-    "šipek a": "arrows and",
-    "bílých jedniček.": "white ones.",
     "------ NOVÉ KOLO ROZDÁNO": "------ NEW ROUND DEALT",
     "Rozdávající:": "Dealer:",
     "Startovní karta:": "Starting card:",
+"PIVNÍ REŽIM:": "BEER MODE:",
+"VELIKOST LOKU:": "GULP SIZE:",
+"<div style=\"border-bottom: 1px solid #00d2ff; font-weight: bold; margin-bottom: 8px; color: #00d2ff; text-align: center; text-transform: uppercase; letter-spacing: 1px;\">HISTORIE AKCÍ HRÁČŮ</div>": "<div style=\"border-bottom: 1px solid #00d2ff; font-weight: bold; margin-bottom: 8px; color: #00d2ff; text-align: center; text-transform: uppercase; letter-spacing: 1px;\">PLAYER ACTION HISTORY</div>",
+"Hra spuštěna...": "Game started...",
+    "<div id=\"log-content\" style=\"flex-grow: 1; overflow-y: auto; padding-right: 5px;\">Hra spuštěna...</div>": "<div id=\"log-content\" style=\"flex-grow: 1; overflow-y: auto; padding-right: 5px;\">Game started...</div>",
 
-    // Herní akce a karty
-    "rozdal kartu Král! Královská výzva letí na hráče": "dealt a King! Royal Challenge flies towards",
-    "NEVYUŽIL Královskou výzvu. Král ho beztrestně přelétá.": "DID NOT USE the Royal Challenge. The King flies over without penalty.",
-    "PŘIJÍMÁ Královskou výzvu!": "ACCEPTS the Royal Challenge!",
+    // 2. OPRAVA SLOVOSLEDU (Tady byl hlavní zádrhel)
+    // Místo "lidech do" a "bodů. Rozdává se" spojíme text do logických celků,
+    // které se v angličtině poskládají správně za ta čísla:
+    "lidech do": "players up to",
+    "bodů. Rozdává se": "points. Dealing", 
+    "V balíčku je": "In the deck there are",
+    "šipek a": "arrows and",
+    "bílých jedniček.": "white ones.",
+
+    // 3. HERNÍ AKCE (Tady jména jako Venca/Ríša stojí před nebo za textem, takže split funguje)
+    "rozdal kartu Král! Královská výzva letí na hráče": "dealt a King! Royal Challenge flies towards player",
+    "zahrál Krále! Výzva letí na hráče": "played King! Challenge flies to player", // Pokud máte jména botů napevno
+    // 👑 KRÁLOVSKÁ VÝZVA - BOTI (Viky, Ríša atd.)
+    "</b> <b style=\"color: var(--green); font-weight: bold;\">PŘIJÍMÁ</b> Královskou výzvu!": "</b> <b style=\"color: var(--green); font-weight: bold;\">ACCEPTS</b> the Royal Challenge!",
+    "</b> <b style=\"color: var(--green);\">NEVYUŽIL</b> Královskou výzvu. Král ho beztrestně přelétá.": "</b> <b style=\"color: var(--green);\">DID NOT USE</b> the Royal Challenge. The King flies over without penalty.",
+"VÍTĚZ 🏆": "WINNER 🏆",
+
+    // 👑 KRÁLOVSKÁ VÝZVA - ČLOVĚK (Jedla)
+  "</b> <b style=\"color: #ffff00;\">NEVYUŽIL</b> Královskou výzvu. Král ho přelétá.": "</b> <b style=\"color: #ffff00;\">DID NOT USE</b> the Royal Challenge. The King flies over.",
+    "<b style=\"color: #ffff00;\">nevyužil</b> Královskou výzvu. Trest": "<b style=\"color: #ffff00;\">did not use</b> the Royal Challenge. Penalty",
+    "letí na dalšího hráče.": "flies to the next player.",
+    "letí na dalšího hráče.": "flies to the next player.",
     "odehrál kartu:": "played card:",
     "a vybral:": "and selected:",
     "neměl obranu na": "had no defense against",
     "-> LÍZAL / STÁL": "-> DREW / PASSED",
-    "🔄 Venca PROVEDL VÝMĚNU KARET!": "🔄 Venca PERFORMED A CARD SWAP!", // Pokud se jméno mění, vyřešeno níže
     "PROVEDL VÝMĚNU KARET!": "PERFORMED A CARD SWAP!",
+"</b> <b style=\"color: var(--green); font-weight: bold;\">ODMÍTÁ</b> Královskou výzvu (vzdává se bez postihu).": "</b> <b style=\"color: var(--green); font-weight: bold;\">REFUSE</b> the Royal Challenge (surrenders without penalty).",
 
-    // Názvy speciálních karet pro překlad v textu věty
+    // 4. KARTY (Musí být na konci, aby se nepřeložily uvnitř českých slov dříve)
     "šipka": "arrow",
     "ršipka": "reverse arrow",
     "král": "king",
@@ -5285,11 +5330,124 @@ const ufoLogTranslations = {
     "hlava": "head",
     "smajlík": "smiley",
     "lízátko": "lollipop",
-"⚙️ Kolo č.": "⚙️ Round No.",
     "Kolo č.": "Round No.",
     "Karty v kole": "Cards in round",
-    "Karty turnaj": "Total cards"
+    "Karty turnaj": "Total cards",
+
+// 🍻 HOSPODSKÉ HLÁŠKY - PŘEKLADY PRO EXNUTÍ PIVA
+    // =========================================================================
+    "</b> exnul pivo, zařval na servírku a už mu nese další!": "</b> chugged a beer, yelled at the waitress, and she's already bringing another!",
+    "</b> otočil prázdný půllitr dnem vzhůru a objednává další kousek.": "</b> turned the empty pint upside down and is ordering another round.",
+    "</b> vyschl, ale u baru nelení a okamžitě tankuje čerstvou hladinku!": "</b> ran dry, but didn't waste time at the bar and immediately refueled with a fresh pint!",
+    "</b> dopil, prásknul půllitrem o stůl a huláká: „Eště jedno, šéfe!“": "</b> finished his drink, slammed the pint on the table, and shouted: \"Another one, boss!\"",
+    "</b> do sebe vyklopil poslední kapky a hned si píše další čárku na tácek.": "</b> downed the last drops and immediately marked another tally on his coaster.",
+    "</b> spláchnul hrdlo, zamával prázdným kríglem na výčepního a křičí: „Nenech mě sušit!“": "</b> cleared his throat, waved an empty mug at the bartender, and yelled: \"Don't leave me stranded!\"",
+    "</b> tam poslal desátý lok, utřel si pěnu z pusy a dává znamení na další kousek.": "</b> took his tenth gulp, wiped the foam off his mouth, and signaled for another one.",
+    "</b> si stěžuje, že mu v krku hrozně vyschlo, tak do sebe okamžitě obrací celej škopek": "</b> complained that his throat was bone dry, so he immediately downed the whole tankard",
+    "</b> vyžahnul pivo na ex, udělal dlouhé „áááh“ a na tácku mu přistává čerstvá pěna.": "</b> slammed a beer on ex, let out a long \"aaah,\" and a fresh head of foam landed on his coaster.",
+    "</b> ukázal ukázkové hospodské tempo – půllitr je prázdný a servírka už běží s novým.": "</b> showed a textbook pub pace – the pint is empty, and the waitress is already running over with a new one.",
+    "</b> vycucl i poslední bublinku pěny a dává vrchnímu jasný signál vztyčeným prstem.": "</b> sucked out the very last bubble of foam and gave the head waiter a clear signal with a raised finger.",
+    "</b> do sebe nasázel zbytek piva rychlostí blesku a hlásí: „Tohle bylo nějaký zvětralý, přines radši další!“": "</b> downed the rest of his beer at lightning speed and reported: \"This one was kind of flat, better bring another!\"",
+    "</b> hraje karty jako bůh, a pije jako ďábel – zrovna do sebe otočil další kousek.": "</b> plays cards like a god and drinks like a devil – he just turned around another one.",
+    "</b> úspěšně zlikvidoval celou hladinku a u stolu se ozvalo známé: „Šéfiku, piš mi další!“": "</b> successfully eliminated the whole pint, and a familiar phrase echoed from the table: \"Boss, put another one on my tab!\"",
+"</b> poslal pivo rovnou do chladiče, otřel rukávem stůl i bradu a už se mu nese další čerstvě načepované.": "</b> sent the beer straight down the hatch, wiped the table and his chin with his sleeve, and another freshly poured one is already on its way.",
+    "</b> slyší anděly zpívat, protože právě dopil a z pípy už mu letí nová orosená odměna!": "</b> hears angels singing, because they just finished their drink, and a new frosty reward is already flying from the tap!",
+    "</b> vyhrál souboj s žízní na K.O., hází prázdnou sklenici do placu a dává si repete.": "</b> won the battle against thirst by K.O., throws the empty glass into the ring, and is up for a refill.",
+    "</b> chytá správnou hospodskou slinu! Dopil, utřel knírek a kyne vilně na výčep.": "</b> is getting into the proper pub mood! Finished their drink, wiped their mustache, and gestured eagerly toward the bar.",
+    "</b> měl v krku hotovou Saharu, tak tam ten zbytek piva zahučel jako do Macochy. Servírka už kmitá!": "</b> had a total Sahara in their throat, so the rest of the beer vanished like down a bottomless pit. The waitress is already on the move!",
+    "</b> ztratil zábrany i pivo! Půllitr je prázdný, ale záchrana s hustou pěnou už je naštěstí na cestě.": "</b> lost both inhibitions and beer! The pint is empty, but rescue with a thick head of foam is luckily on the way.",
+    "</b> buduje solidní pivní základ. Právě do sebe poslal další kousek a tácek mu začíná pěkně bobtnat.": "</b> is building a solid beer foundation. They just downed another round, and their stack of coasters is starting to swell.",
+    "</b> dává pivní maraton na pána! Exnul to, ani nemrknul, a u baru hned objednává další nášup.": "</b> is running this beer marathon like a boss! Chugged it without blinking and is immediately ordering another round at the bar.",
+    "</b> namaloval na dno půllitru čistou nulu! Otočil ho do sebe a píše si další zářez.": "</b> painted a pure zero on the bottom of the pint! Turned it over and is marking another tally.",
+    "</b> otočil pivo skoro na jeden zátah, spokojeně si odfrknul a už mu na stole přistává nová studená sprcha.": "</b> turned the beer over almost in one gulp, sighed with satisfaction, and a new cold refresher is already landing on the table.",
+    "</b> vysál půllitr do poslední kapky a hypnotizuje výčepního pohledem, dokud nedostane další.": "</b> sucked the pint down to the last drop and is hypnotizing the bartender with a stare until they get another one.",
+    "</b> smeká před šikovností servírky, because sotva dopil, už mu na stole přistává čerstvý kousek!": "</b> tips their hat to the waitress's skill, because as soon as they finished, a fresh round landed on the table!",
+    "</b> právě úspěšně uhasil požár v krku! Krígl je prázdný a objednává další hasicí směs.": "</b> just successfully put out the fire in their throat! The mug is empty, and they are ordering more extinguishing fluid.",
+    "</b> trénuje biceps zvedáním půllitru! Právě úspěšně dokončil sérii, exnul to a hlásí: „Další kolo!“": "</b> is training their biceps by lifting the pint! Just successfully finished a set, chugged it, and called out: \"Next round!\"",
+    "</b> předvádí hotové hospodské divadlo. Pivo zmizelo jako mávnutím kouzelného proutku. Šéfe, další!": "</b> is putting on a real pub performance. The beer disappeared like magic. Boss, another one!",
+    "</b> trefil pivní jackpot! Spláchnul hrdlo na jeden lok a už mu vrchní nese další nálož pěny.": "</b> hit the beer jackpot! Washed it down in one gulp, and the head waiter is already bringing another round of foam.",
+    "</b> proměnil plný půllitr v prázdný během tří sekund a hned háže očkem po servírce.": "</b> turned a full pint into an empty one in three seconds and is immediately winking at the waitress.",
+    "</b> vytvořil v kríglu hotové tornádo, vysál ho do sucha a už si značí další čárku.": "</b> created a literal tornado in the mug, sucked it dry, and is already marking another tally.",
+    "</b> má žízeň jako prehistorické zvíře! Právě vyžahnul pivo a řve na celou hospodu o repete.": "</b> is as thirsty as a prehistoric beast! Just chugged a beer and is shouting across the pub for a refill.",
+"</b> předvedl magický trik – pivo zmizelo v jeho útrobách a výčepní už bleskově čepuje náhradu.": "</b> performed a magic trick – the beer disappeared into their gut, and the bartender is already swiftly pouring a replacement.",
+    "</b> hlásí, že mu v krku spadl řemen! Spláchnul to na ex a u pípy už se pro něj rozjíždí další kousek.": "</b> reports that their throat has completely stalled! Chugged it down, and another round is already spinning for them at the tap.",
+    "</b> předvedl magickej trik – pivo zmizelo v jeho útrobách a výčepní už bleskově čepuje náhradu.": "</b> performed a magic trick – the beer disappeared into their gut, and the bartender is already swiftly pouring a replacement.",
+    "</b> sleduje, jak hladina klesla na absolutní nulu, a okamžitě posílá vrchnímu jasný signál.": "</b> watches the liquid level drop to absolute zero and immediately sends a clear signal to the head waiter.",
+    "</b> to tam poslal bez zbytečných okolků a hned dává echo baru, že chladič je opět prázdný.": "</b> sent it down without any hesitation and immediately alerts the bar that the cooler is empty again.",
+    "</b> dobil baterky! Obrátil do sebe zbytek hladinky a už mu na stole přistává čerstvá energie s pěnou.": "</b> recharged their batteries! Downed the rest of the pint, and fresh energy with foam is already landing on the table.",
+    "</b> bleskově zlikvidoval orosenou odměnu, utřel si pěnový knír a huláká: „Nenech mě sušit, šéfe!“": "</b> swiftly eliminated the frosty reward, wiped off their foam mustache, and shouted: \"Don't leave me stranded, boss!\"",
+    "</b> trefil desítku přímo do černého – pivo je v něm a tácek už volá po dalším zářezu.": "</b> hit a perfect bullseye – the beer is down, and the coaster is already calling for another notch.",
+"</b> zařval jako lev, exnul zbytek zvětralého kousku a objednává čerstvou, ostrou kroužkovanou dvanáctku.": "</b> roared like a lion, chugged the rest of the flat beer, and is ordering a fresh, crisp unpasteurized 12-degree lager.",
+    "</b> jede jako rozjetá mašina! Půllitr do sebe vyklopil na jeden zátah a u stolu už cinká další sklenice.": "</b> is moving like a runaway train! Downed the pint in one single go, and another glass is already clinking at the table.",
+    "</b> vyskočil ze židle, obrátil do sebe zbytek pěny a dává vrchnímu znamení vztyčeným palcem.": "</b> jumped out of his chair, downed the rest of the foam, and gave the head waiter a thumbs-up signal.",
+    "</b> vstal z mrtvých! Spláchnul Gobi v krku jedním douškem a už se mu nese další ledová záchrana.": "</b> rose from the dead! Washed away the Gobi desert in his throat with one sip, and another ice-cold rescue is already on its way.",
+    "</b> zakotvil u dalšího kousku, spláchnul ho bleskově do podpalubí a objednává další rundu.": "</b> anchored down at another round, flushed it down the hatch in a flash, and is ordering the next round.",
+    "</b> zdolal pivní vrchol! Půllitr zahodil za hlavu a servírka už kmitá s novým oroseným úlovkem.": "</b> conquered the beer peak! Threw the pint over his shoulder, and the waitress is already hustling with a new frosty catch.",
+    "</b> odpálil další kousek! Krígl zůstal prázdný a z výčepu už letí nová nálož husté pěny.": "</b> detonated another round! The mug was left empty, and a fresh payload of thick foam is already flying from the tap.",
+    "</b> nasadil pořádné hroší tempo, vyžahnul sklenici do dna a píše si další čárku na tácek.": "</b> set a massive hippo-like pace, drained the glass to the dregs, and is marking another tally on the coaster.",
+    "</b> zažil pivní únos! Pivo zmizelo neznámo kam a u stolu se ozývá: „Šéfíku, nahoď další!“": "</b> experienced a beer abduction! The beer disappeared into thin air, and a shout echoes from the table: \"Boss, hook up another!\"",
+    "</b> jako správný pivní žralok zavětřil prázdné dno, dopil zbytek a hned hypnotizuje pípu.": "</b> like a true beer shark, scented the empty bottom, finished the rest, and is instantly hypnotizing the tap.",
+    "</b> uhasil dračí slinu! Vyklopil do sebe celou hladinku a už mu na stole přistává nová studená sprcha.": "</b> quenched his dragon-like thirst! Downed the entire pint, and a new cold refresher is already landing on his table.",
+    "</b> zabral jako těžká technika, vycucl půllitr do poslední bublinky a huláká na výčep o nášup.": "</b> pulled like heavy machinery, sucked the pint dry down to the last bubble, and is roaring at the bar for a refill.",
+    "</b> funguje jako magnet na pivo – zrovna do sebe otočil jedno orosené a už si přitahuje další.": "</b> acts like a beer magnet – just turned one frosty round around and is already pulling in the next.",
+    "</b> předvádí neskutečnou akrobacii! Půllitr je prázdný, aniž by uronil jedinou kapku vedle. Piš další!": "</b> is putting on unbelievable acrobatics! The pint is empty without spilling a single drop sideways. Put another on the tab!",
+    "</b> zavedl žízni finální úder! Exnul to na pána a dává servírce jasný signál vztyčeným prstem.": "</b> dealt a final blow to thirst! Chugged it like a boss and gave the waitress a clear signal with a raised finger.",
+"</b> zasadil žízni finální úder! Exnul to na pána a dává servírce jasný signál vztyčeným prstem.": "</b> dealt a final blow to thirst! Chugged it like a boss and gave the waitress a clear signal with a raised finger.",
+    "</b> vyslal pivo na oběžnou dráhu svého žaludku, spokojeně si odfrknul a už vyhlíží další kousek.": "</b> launched the beer into the orbit of his stomach, sighed contentedly, and is already scouting out the next round.",
+    "</b> sbalil celé pivo na jeden lok a u stolu hlásí: „Tohle jenom zahučelo, přines hned další!“": "</b> packed the entire beer into one gulp and reported to the table: \"That just vanished, bring another one straight away!\"",
+    "</b> má lásku k pivu prostě v DNA. Dopil do poslední kapky a na tácek mu okamžitě letí čerstvá pěna.": "</b> simply has a love for beer in his DNA. Drank to the very last drop, and fresh foam instantly flies onto his coaster.",
+    "</b> proťal cílovou pásku! Půllitr je čistý jako slovo boží a vrchní už nese další orosenou odměnu.": "</b> crossed the finish line! The pint is as clean as holy water, and the head waiter is already bringing another frosty reward.",
+    "</b> potvrdil status císaře výčepu. Prázdný krígl prásknul o stůl a křičí: „Nenechávejte mě sušit!“": "</b> confirmed the status of the emperor of the taproom. Slammed the empty mug on the table and yelled: \"Don't leave me stranded!\"",
+
+// 🔄 VÝMĚNA KARET VPRAVO - NOVÁ NEPRŮSTŘELNÁ VERZE:
+    "NASRAT! ": "FUCK THAT! ",
+    " CHCE MĚNIT! VYBER KARTU A POŠLI VPRAVO.</b>": " WANTS TO SWAP! SELECT A CARD AND SEND IT RIGHT.</b>",
+
+// 🎴 NEVYUŽITÍ VOLNÉHO TAHU
+    "</i> nevyužil volný tah a raději LÍZAL</span>": "</i> skipped their free turn and chose to DRAW instead.</span>",
+
+// 😊 NESPLNĚNÝ ÚKOL Z KOLOTOČE PŘI SMAJLÍKOVI
+    "</b> sice odhodil Smajlíka, ale nesplnil aktivní úkol z Kolotoče (": "</b> discarded a Smiley but failed the active Carousel task (",
+    ") -> MUSÍ LÍZAT ": ") -> MUST DRAW ",
+    " KARET!</span>": " CARDS!</span>",
+
+// ⚠️ POKUS O UKONČENÍ LÍZÁTKEM BEZ SMAJLÍKA (BOT)
+    "<span style=\"color: var(--red, #e94560); font-weight: bold;\">⚠️ Bot <b>": "<span style=\"color: var(--red, #e94560); font-weight: bold;\">⚠️ Bot <b>",
+    "</b> se pokusil ukončit kolo Lízátkem bez Smajlíka! Lízá 1 trestnou kartu.</span>": "</b> tried to end the round with a Lollipop without a Smiley! Draws 1 penalty card.</span>",
+
+// 👑 ODHOZENÍ POSLEDNÍ KARTY KRÁLE
+    "</b> odhodil svou poslední kartu Krále, takže si ihned automaticky líže 1 kartu zpět.": "</b> discarded their last card (King), so they immediately automatically draw 1 card back.",
+
+// ⚠️ NESPLNĚNÝ ÚKOL Z KOLOTOČE (OBECNÝ - 1 KARTA)
+    "</i> nesplnil úkol z Kolotoče (": "</i> failed the Carousel task (",
+    ") -> LÍZAL 1 KARTU</span>": ") -> DREW 1 CARD</span>",
+
+// 👑 KRÁLOVSKÁ VÝZVA - ČLOVĚK / HRÁČ (Jedla)
+    "</b> <b style=\"color: #ffff00;\">nevyužil</b> Královskou výzvu. Trest (<b style=\"color: #ffff00;\">": "</b> <b style=\"color: #ffff00;\">did not use</b> the Royal Challenge. Penalty (<b style=\"color: #ffff00;\">",
+    "</b>) letí na dalšího hráče.": "</b>) flies to the next player.",
+
+ // 🍺 AKTIVACE PIVNÍHO REŽIMU
+    "</b> pro tento tah aktivoval pivní režim: <b style=\"text-transform: uppercase; color: var(--yellow);\">": "</b> activated beer mode for this turn: <b style=\"text-transform: uppercase; color: var(--yellow);\">",
+    "</b>.": "</b>.",
+
+ // 👑 PŘIJETÍ VÝZVY - ČLOVĚK / HRÁČ 0
+    "</b> <b style=\"color: #ffff00;\">PŘIJÍMÁ</b> Královskou výzvu!": "</b> <b style=\"color: #ffff00;\">ACCEPTS</b> the Royal Challenge!",
+
+// 😊 ODHOZENÍ POSLEDNÍ KARTY (POTENCIÁLNÍ VÍTĚZSTVÍ)
+    "</b> odhodil poslední kartu 😊! Pokud do příštího tahu nedostane trest, VYHRÁVÁ.": "</b> discarded their last card 😊! If they don't get a penalty by the next turn, they WIN.",
+
+// 🏆 PŘEŽITÍ KOLA A TRESTNÉ BODY
+    "<span style=\"color: var(--blue); font-weight: bold;\">🏆 <b>": "<span style=\"color: var(--blue); font-weight: bold;\">🏆 <b>",
+    "</b> přežil kolo s 0 kartami, končí na ": "</b> survived the round with 0 cards, finishes in ",
+    ". místě a získává ": ". place and receives ",
+    " trestné body!</span>": " penalty points!</span>",
+
+"</b> zůstal poslední (": "</b> remained last (",
+". místo) a získává ": ". place and receives ",
+" trestné body!</span>": " penalty points!</span>",
+
 };
+
 
 function addToLog(message) {
     const logContent = document.getElementById('log-content');
