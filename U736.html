@@ -1071,70 +1071,125 @@ html, body { overscroll-behavior: contain !important; }
     <span class="prekladatelny" data-cs="NASTAVENÍ BALÍČKU KARET" data-en="CARD DECK SETTINGS">NASTAVENÍ BALÍČKU KARET</span> ⚙️
 </button>
 
-<!-- 📦 SKRYTÝ PANEL SE ZAŠKRTÁVACÍMI POLÍČKY -->
-<div id="card-settings-panel" style="display: none; margin-top: 15px; border: 1px solid #c5a059; background: rgba(20, 10, 5, 0.9); padding: 15px; border-radius: 6px; box-shadow: inset 0 0 10px rgba(0,0,0,0.8);">
+<!-- 📦 SKRYTÝ PANEL SE ZAŠKRTÁVACÍMI POLÍČKY A MNOŽSTVÍM -->
+<div id="card-settings-panel" style="display: none; margin-top: 15px; border: 1px solid #c5a059; background: rgba(20, 10, 5, 0.95); padding: 15px; border-radius: 6px; box-shadow: inset 0 0 10px rgba(0,0,0,0.8); max-height: 280px; overflow-y: auto;">
     
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; max-height: 120px; overflow-y: auto; padding: 5px; text-align: left;">
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; text-align: left;">
         
-        <!-- 1. ČÍSLA -->
-        <label style="display: flex; align-items: center; gap: 8px; color: #f4ecd8; font-size: 0.85em; cursor: pointer;">
-            <input type="checkbox" class="card-type-toggle" value="cisla" checked style="accent-color: #c5a059; width: 15px; height: 15px;">
-            <span class="prekladatelny" data-cs="Číselné (1,2,3,5)" data-en="Numbers (1,2,3,5)">Číselné (1,2,3,5)</span>
-        </label>
+        <!-- ⚪ BÍLÉ KARTY -->
+        <div>
+            <h4 style="color: #ffffff; border-bottom: 1px solid #422615; margin: 0 0 8px 0; font-size: 0.9em; letter-spacing: 1px;" class="prekladatelny" data-cs="⚪ BÍLÉ KARTY" data-en="⚪ WHITE CARDS">⚪ BÍLÉ KARTY</h4>
+            <div style="display: flex; flex-direction: column; gap: 6px;">
+                <!-- 1. BÍLÁ 1 -->
+                <label style="display: flex; align-items: center; justify-content: space-between; color: #f4ecd8; font-size: 0.8em; cursor: pointer;">
+                    <span style="display:flex; align-items:center; gap:8px;"><input type="checkbox" class="card-type-toggle" value="T1" checked style="accent-color:#c5a059;"><span class="prekladatelny" data-cs="Bílá 1" data-en="White 1">Bílá 1</span></span>
+                    <input type="number" class="card-count-input" data-card="T1" min="1" max="15" value="8" style="width: 40px; background: #2e1a0f; color: #f4ecd8; border: 1px solid #c5a059; border-radius: 3px; text-align: center;">
+                </label>
+                <label style="display: flex; align-items: center; justify-content: space-between; color: #f4ecd8; font-size: 0.8em; cursor: pointer;">
+                    <span style="display:flex; align-items:center; gap:8px;"><input type="checkbox" class="card-type-toggle" value="T2" checked style="accent-color:#c5a059;"><span class="prekladatelny" data-cs="Bílá 2" data-en="White 2">Bílá 2</span></span>
+                    <input type="number" class="card-count-input" data-card="T2" min="1" max="10" value="3" style="width: 40px; background: #2e1a0f; color: #f4ecd8; border: 1px solid #c5a059; border-radius: 3px; text-align: center;">
+                </label>
+                <label style="display: flex; align-items: center; justify-content: space-between; color: #f4ecd8; font-size: 0.8em; cursor: pointer;">
+                    <span style="display:flex; align-items:center; gap:8px;"><input type="checkbox" class="card-type-toggle" value="T3" checked style="accent-color:#c5a059;"><span class="prekladatelny" data-cs="Bílá 3" data-en="White 3">Bílá 3</span></span>
+                    <input type="number" class="card-count-input" data-card="T3" min="1" max="10" value="2" style="width: 40px; background: #2e1a0f; color: #f4ecd8; border: 1px solid #c5a059; border-radius: 3px; text-align: center;">
+                </label>
+                <label style="display: flex; align-items: center; justify-content: space-between; color: #f4ecd8; font-size: 0.8em; cursor: pointer;">
+                    <span style="display:flex; align-items:center; gap:8px;"><input type="checkbox" class="card-type-toggle" value="T5" checked style="accent-color:#c5a059;"><span class="prekladatelny" data-cs="Bílá 5" data-en="White 5">Bílá 5</span></span>
+                    <input type="number" class="card-count-input" data-card="T5" min="1" max="10" value="1" style="width: 40px; background: #2e1a0f; color: #f4ecd8; border: 1px solid #c5a059; border-radius: 3px; text-align: center;">
+                </label>
+                <label style="display: flex; align-items: center; justify-content: space-between; color: #f4ecd8; font-size: 0.8em; cursor: pointer;">
+                    <span style="display:flex; align-items:center; gap:8px;"><input type="checkbox" class="card-type-toggle" value="T0" checked style="accent-color:#c5a059;"><span class="prekladatelny" data-cs="Bílá Nula (0)" data-en="White Zero (0)">Bílá Nula (0)</span></span>
+                    <input type="number" class="card-count-input" data-card="T0" min="1" max="10" value="1" style="width: 40px; background: #2e1a0f; color: #f4ecd8; border: 1px solid #c5a059; border-radius: 3px; text-align: center;">
+                </label>
+                <label style="display: flex; align-items: center; justify-content: space-between; color: #f4ecd8; font-size: 0.8em; cursor: pointer;">
+                    <span style="display:flex; align-items:center; gap:8px;"><input type="checkbox" class="card-type-toggle" value="TA" checked style="accent-color:#c5a059;"><span class="prekladatelny" data-cs="Bílá Šipka (➔)" data-en="White Arrow (➔)">Bílá Šipka (➔)</span></span>
+                    <input type="number" class="card-count-input" data-card="TA" min="1" max="15" value="8" style="width: 40px; background: #2e1a0f; color: #f4ecd8; border: 1px solid #c5a059; border-radius: 3px; text-align: center;">
+                </label>
+                <label style="display: flex; align-items: center; justify-content: space-between; color: #f4ecd8; font-size: 0.8em; cursor: pointer;">
+                    <span style="display:flex; align-items:center; gap:8px;"><input type="checkbox" class="card-type-toggle" value="TS" checked style="accent-color:#c5a059;"><span class="prekladatelny" data-cs="Bílá Stopka (🛑)" data-en="White Stop (🛑)">Bílá Stopka (🛑)</span></span>
+                    <input type="number" class="card-count-input" data-card="TS" min="1" max="10" value="4" style="width: 40px; background: #2e1a0f; color: #f4ecd8; border: 1px solid #c5a059; border-radius: 3px; text-align: center;">
+                </label>
+                <label style="display: flex; align-items: center; justify-content: space-between; color: #f4ecd8; font-size: 0.8em; cursor: pointer;">
+                    <span style="display:flex; align-items:center; gap:8px;"><input type="checkbox" class="card-type-toggle" value="TK" checked style="accent-color:#c5a059;"><span class="prekladatelny" data-cs="Bílý Kolotoč (⟳)" data-en="White Carousel (⟳)">Bílý Kolotoč (⟳)</span></span>
+                    <input type="number" class="card-count-input" data-card="TK" min="1" max="10" value="4" style="width: 40px; background: #2e1a0f; color: #f4ecd8; border: 1px solid #c5a059; border-radius: 3px; text-align: center;">
+                </label>
+                <label style="display: flex; align-items: center; justify-content: space-between; color: #f4ecd8; font-size: 0.8em; cursor: pointer;">
+                    <span style="display:flex; align-items:center; gap:8px;"><input type="checkbox" class="card-type-toggle" value="TKR" checked style="accent-color:#c5a059;"><span class="prekladatelny" data-cs="Bílý Král (👑)" data-en="White King (👑)">Bílý Král (👑)</span></span>
+                    <input type="number" class="card-count-input" data-card="TKR" min="1" max="10" value="2" style="width: 40px; background: #2e1a0f; color: #f4ecd8; border: 1px solid #c5a059; border-radius: 3px; text-align: center;">
+                </label>
+                <label style="display: flex; align-items: center; justify-content: space-between; color: #f4ecd8; font-size: 0.8em; cursor: pointer;">
+                    <span style="display:flex; align-items:center; gap:8px;"><input type="checkbox" class="card-type-toggle" value="TH" checked style="accent-color:#c5a059;"><span class="prekladatelny" data-cs="Bílé Hovno (💩)" data-en="White Poop (💩)">Bílé Hovno (💩)</span></span>
+                    <input type="number" class="card-count-input" data-card="TH" min="1" max="10" value="2" style="width: 40px; background: #2e1a0f; color: #f4ecd8; border: 1px solid #c5a059; border-radius: 3px; text-align: center;">
+                </label>
+            </div>
+        </div>
 
-        <!-- 2. NULY -->
-        <label style="display: flex; align-items: center; gap: 8px; color: #f4ecd8; font-size: 0.85em; cursor: pointer;">
-            <input type="checkbox" class="card-type-toggle" value="nula" checked style="accent-color: #c5a059; width: 15px; height: 15px;">
-            <span class="prekladatelny" data-cs="Nuly (0)" data-en="Zeros (0)">Nuly (0)</span>
-        </label>
+       <!-- ⚫ ČERNÉ (REVERZNÍ) KARTY -->
+        <div>
+            <h4 style="color: #c5a059; border-bottom: 1px solid #422615; margin: 0 0 8px 0; font-size: 0.9em; letter-spacing: 1px;" class="prekladatelny" data-cs="⚫ ČERNÉ KARTY" data-en="⚫ BLACK CARDS">⚫ ČERNÉ KARTY</h4>
+            <div style="display: flex; flex-direction: column; gap: 6px;">
+                <label style="display: flex; align-items: center; justify-content: space-between; color: #f4ecd8; font-size: 0.8em; cursor: pointer;">
+                    <span style="display:flex; align-items:center; gap:8px;"><input type="checkbox" class="card-type-toggle" value="R1" checked style="accent-color: #c5a059;"><span class="prekladatelny" data-cs="Černá 1" data-en="Black 1">Černá 1</span></span>
+                    <input type="number" class="card-count-input" data-card="R1" min="1" max="10" value="4" style="width: 40px; background: #2e1a0f; color: #f4ecd8; border: 1px solid #c5a059; border-radius: 3px; text-align: center;">
+                </label>
+                <label style="display: flex; align-items: center; justify-content: space-between; color: #f4ecd8; font-size: 0.8em; cursor: pointer;">
+                    <span style="display:flex; align-items:center; gap:8px;"><input type="checkbox" class="card-type-toggle" value="R2" checked style="accent-color: #c5a059;"><span class="prekladatelny" data-cs="Černá 2" data-en="Black 2">Černá 2</span></span>
+                    <input type="number" class="card-count-input" data-card="R2" min="1" max="10" value="3" style="width: 40px; background: #2e1a0f; color: #f4ecd8; border: 1px solid #c5a059; border-radius: 3px; text-align: center;">
+                </label>
+                <label style="display: flex; align-items: center; justify-content: space-between; color: #f4ecd8; font-size: 0.8em; cursor: pointer;">
+                    <span style="display:flex; align-items:center; gap:8px;"><input type="checkbox" class="card-type-toggle" value="R3" checked style="accent-color: #c5a059;"><span class="prekladatelny" data-cs="Černá 3" data-en="Black 3">Černá 3</span></span>
+                    <input type="number" class="card-count-input" data-card="R3" min="1" max="10" value="2" style="width: 40px; background: #2e1a0f; color: #f4ecd8; border: 1px solid #c5a059; border-radius: 3px; text-align: center;">
+                </label>
+                <label style="display: flex; align-items: center; justify-content: space-between; color: #f4ecd8; font-size: 0.8em; cursor: pointer;">
+                    <span style="display:flex; align-items:center; gap:8px;"><input type="checkbox" class="card-type-toggle" value="R5" checked style="accent-color: #c5a059;"><span class="prekladatelny" data-cs="Černá 5" data-en="Black 5">Černá 5</span></span>
+                    <input type="number" class="card-count-input" data-card="R5" min="1" max="10" value="1" style="width: 40px; background: #2e1a0f; color: #f4ecd8; border: 1px solid #c5a059; border-radius: 3px; text-align: center;">
+                </label>
+                <label style="display: flex; align-items: center; justify-content: space-between; color: #f4ecd8; font-size: 0.8em; cursor: pointer;">
+                    <span style="display:flex; align-items:center; gap:8px;"><input type="checkbox" class="card-type-toggle" value="R0" checked style="accent-color: #c5a059;"><span class="prekladatelny" data-cs="Černá Nula (0)" data-en="Black Zero (0)">Černá Nula (0)</span></span>
+                    <input type="number" class="card-count-input" data-card="R0" min="1" max="10" value="1" style="width: 40px; background: #2e1a0f; color: #f4ecd8; border: 1px solid #c5a059; border-radius: 3px; text-align: center;">
+                </label>
+                <label style="display: flex; align-items: center; justify-content: space-between; color: #f4ecd8; font-size: 0.8em; cursor: pointer;">
+                    <span style="display:flex; align-items:center; gap:8px;"><input type="checkbox" class="card-type-toggle" value="RA" checked style="accent-color: #c5a059;"><span class="prekladatelny" data-cs="Černá Šipka (➔)" data-en="Black Arrow (➔)">Černá Šipka (➔)</span></span>
+                    <input type="number" class="card-count-input" data-card="RA" min="1" max="10" value="4" style="width: 40px; background: #2e1a0f; color: #f4ecd8; border: 1px solid #c5a059; border-radius: 3px; text-align: center;">
+                </label>
+                <label style="display: flex; align-items: center; justify-content: space-between; color: #f4ecd8; font-size: 0.8em; cursor: pointer;">
+                    <span style="display:flex; align-items:center; gap:8px;"><input type="checkbox" class="card-type-toggle" value="RS" checked style="accent-color: #c5a059;"><span class="prekladatelny" data-cs="Černá Stopka (🛑)" data-en="Black Stop (🛑)">Černá Stopka (🛑)</span></span>
+                    <input type="number" class="card-count-input" data-card="RS" min="1" max="10" value="1" style="width: 40px; background: #2e1a0f; color: #f4ecd8; border: 1px solid #c5a059; border-radius: 3px; text-align: center;">
+                </label>
+                <label style="display: flex; align-items: center; justify-content: space-between; color: #f4ecd8; font-size: 0.85em; cursor: pointer;">
+                    <span style="display:flex; align-items:center; gap:8px;"><input type="checkbox" class="card-type-toggle" value="RK" checked style="accent-color: #c5a059;"><span class="prekladatelny" data-cs="Černý Kolotoč (⟳)" data-en="Black Carousel (⟳)">Černý Kolotoč (⟳)</span></span>
+                    <input type="number" class="card-count-input" data-card="RK" min="1" max="10" value="1" style="width: 40px; background: #2e1a0f; color: #f4ecd8; border: 1px solid #c5a059; border-radius: 3px; text-align: center;">
+                </label>
+                <label style="display: flex; align-items: center; justify-content: space-between; color: #f4ecd8; font-size: 0.8em; cursor: pointer;">
+                    <span style="display:flex; align-items:center; gap:8px;"><input type="checkbox" class="card-type-toggle" value="RKR" checked style="accent-color: #c5a059;"><span class="prekladatelny" data-cs="Černý Král (👑)" data-en="Black King (👑)">Černý Král (👑)</span></span>
+                    <input type="number" class="card-count-input" data-card="RKR" min="1" max="10" value="2" style="width: 40px; background: #2e1a0f; color: #f4ecd8; border: 1px solid #c5a059; border-radius: 3px; text-align: center;">
+                </label>
+                <label style="display: flex; align-items: center; justify-content: space-between; color: #f4ecd8; font-size: 0.8em; cursor: pointer;">
+                    <span style="display:flex; align-items:center; gap:8px;"><input type="checkbox" class="card-type-toggle" value="RH" checked style="accent-color: #c5a059;"><span class="prekladatelny" data-cs="Černé Hovno (💩)" data-en="Black Poop (💩)">Černé Hovno (💩)</span></span>
+                    <input type="number" class="card-count-input" data-card="RH" min="1" max="10" value="1" style="width: 40px; background: #2e1a0f; color: #f4ecd8; border: 1px solid #c5a059; border-radius: 3px; text-align: center;">
+                </label>
+            </div>
+        </div>
 
-        <!-- 3. ŠIPKY -->
-        <label style="display: flex; align-items: center; gap: 8px; color: #f4ecd8; font-size: 0.85em; cursor: pointer;">
-            <input type="checkbox" class="card-type-toggle" value="sipka" checked style="accent-color: #c5a059; width: 15px; height: 15px;">
-            <span class="prekladatelny" data-cs="Šipky (➔)" data-en="Arrows (➔)">Šipky (➔)</span>
-        </label>
+        <!-- ✨ SPECIÁLNÍ UNIKÁTNÍ KARTY -->
+        <div style="grid-column: 1 / -1;">
+            <h4 style="color: #c5a059; border-bottom: 1px solid #422615; margin: 15px 0 8px 0; font-size: 0.9em; letter-spacing: 1px;" class="prekladatelny" data-cs="✨ SPECIÁLNÍ UNIKÁTNÍ KARTY" data-en="✨ SPECIAL UNIQUE CARDS">✨ SPECIÁLNÍ UNIKÁTNÍ KARTY</h4>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px;">
+                <label style="display: flex; align-items: center; justify-content: space-between; color: #f4ecd8; font-size: 0.8em; cursor: pointer;">
+                    <span style="display:flex; align-items:center; gap:8px;"><input type="checkbox" class="card-type-toggle" value="TSM" checked style="accent-color: #c5a059;"><span class="prekladatelny" data-cs="Smajlíci (😊)" data-en="Smilies (😊)">Smajlíci (😊)</span></span>
+                    <input type="number" class="card-count-input" data-card="TSM" min="1" max="10" value="3" style="width: 40px; background: #2e1a0f; color: #f4ecd8; border: 1px solid #c5a059; border-radius: 3px; text-align: center;">
+                </label>
+                <label style="display: flex; align-items: center; justify-content: space-between; color: #f4ecd8; font-size: 0.8em; cursor: pointer;">
+                    <span style="display:flex; align-items:center; gap:8px;"><input type="checkbox" class="card-type-toggle" value="TLIZ" checked style="accent-color: #c5a059;"><span class="prekladatelny" data-cs="Lízátka (🍭)" data-en="Lollipops (🍭)">Lízátka (🍭)</span></span>
+                    <input type="number" class="card-count-input" data-card="TLIZ" min="1" max="10" value="1" style="width: 40px; background: #2e1a0f; color: #f4ecd8; border: 1px solid #c5a059; border-radius: 3px; text-align: center;">
+                </label>
+                <label style="display: flex; align-items: center; justify-content: space-between; color: #f4ecd8; font-size: 0.8em; cursor: pointer;">
+                    <span style="display:flex; align-items:center; gap:8px;"><input type="checkbox" class="card-type-toggle" value="THL" checked style="accent-color: #c5a059;"><span class="prekladatelny" data-cs="UFO Hlavy (👽)" data-en="UFO Heads (👽)">UFO Hlavy (👽)</span></span>
+                    <input type="number" class="card-count-input" data-card="THL" min="1" max="10" value="1" style="width: 40px; background: #2e1a0f; color: #f4ecd8; border: 1px solid #c5a059; border-radius: 3px; text-align: center;">
+                </label>
+            </div>
+        </div>
 
-        <!-- 4. STOPKY -->
-        <label style="display: flex; align-items: center; gap: 8px; color: #f4ecd8; font-size: 0.85em; cursor: pointer;">
-            <input type="checkbox" class="card-type-toggle" value="stop" checked style="accent-color: #c5a059; width: 15px; height: 15px;">
-            <span class="prekladatelny" data-cs="Stopky (🛑)" data-en="Stops (🛑)">Stopky (🛑)</span>
-        </label>
-
-        <!-- 5. KOLOTOČE -->
-        <label style="display: flex; align-items: center; gap: 8px; color: #f4ecd8; font-size: 0.85em; cursor: pointer;">
-            <input type="checkbox" class="card-type-toggle" value="kolotoc" checked style="accent-color: #c5a059; width: 15px; height: 15px;">
-            <span class="prekladatelny" data-cs="Kolotoče (⟳)" data-en="Carousels (⟳)">Kolotoče (⟳)</span>
-        </label>
-
-        <!-- 6. KRÁLOVÉ -->
-        <label style="display: flex; align-items: center; gap: 8px; color: #f4ecd8; font-size: 0.85em; cursor: pointer;">
-            <input type="checkbox" class="card-type-toggle" value="kral" checked style="accent-color: #c5a059; width: 15px; height: 15px;">
-            <span class="prekladatelny" data-cs="Králové (👑)" data-en="Kings (👑)">Králové (👑)</span>
-        </label>
-
-        <!-- 7. HOVNA -->
-        <label style="display: flex; align-items: center; gap: 8px; color: #f4ecd8; font-size: 0.85em; cursor: pointer;">
-            <input type="checkbox" class="card-type-toggle" value="hovno" checked style="accent-color: #c5a059; width: 15px; height: 15px;">
-            <span class="prekladatelny" data-cs="Hovna (💩)" data-en="Poops (💩)">Hovna (💩)</span>
-        </label>
-
-        <!-- 8. SMAJLÍCI -->
-        <label style="display: flex; align-items: center; gap: 8px; color: #f4ecd8; font-size: 0.85em; cursor: pointer;">
-            <input type="checkbox" class="card-type-toggle" value="smajlik" checked style="accent-color: #c5a059; width: 15px; height: 15px;">
-            <span class="prekladatelny" data-cs="Smajlíci (😊)" data-en="Smilies (😊)">Smajlíci (😊)</span>
-        </label>
-
-        <!-- 9. LÍZÁTKA -->
-        <label style="display: flex; align-items: center; gap: 8px; color: #f4ecd8; font-size: 0.85em; cursor: pointer;">
-            <input type="checkbox" class="card-type-toggle" value="lizatko" checked style="accent-color: #c5a059; width: 15px; height: 15px;">
-            <span class="prekladatelny" data-cs="Lízátka (🍭)" data-en="Lollipops (🍭)">Lízátka (🍭)</span>
-        </label>
-
-        <!-- 10. UFO HLAVY -->
-        <label style="display: flex; align-items: center; gap: 8px; color: #f4ecd8; font-size: 0.85em; cursor: pointer;">
-            <input type="checkbox" class="card-type-toggle" value="hlava" checked style="accent-color: #c5a059; width: 15px; height: 15px;">
-            <span class="prekladatelny" data-cs="UFO Hlavy (👽)" data-en="UFO Heads (👽)">UFO Hlavy (👽)</span>
-        </label>
 
     </div>
 </div>
@@ -1936,10 +1991,12 @@ function prepniZvuk() {
     const R1='r1', R2='r2', R3='r3', R5='r5' , RK='rkolotoč', RS='rstop', RA='ršipka', R0='rnula' , RH='rhovno', RKR='rkrál';
 
     // 3. PROMĚNNÉ PRO AKTUÁLNÍ KOLO (Smazány duplicity botThinking a loserId)
+let vyřazenéKartyTurnaje = [];
     let deck=[], discardStack=[], players=[], currentPlayerIdx=0, carouselConstraint=null, activeEffect=null, numPlayers=5, gameDirection=1;
     let swapUsed = false;
     let isSwapSelection = false;
     let kingChallenge = false;
+let fixniPrehledNastaveniKaret = "";
 
 function cleanCard(card) {
     if (!card) return '';
@@ -1977,6 +2034,56 @@ function prehrajZvukModalu() {
 }
 
 function spustitHruZMenu() {
+    // =========================================================================
+    // 🎴 UKLÁDÁNÍ POČÁTEČNÍ KONFIGURACE KARET PRO FINÁLNÍ ALERT (FIX)
+    // =========================================================================
+    let vypnute = [];
+    let posilene = [];
+
+    const klicoveNazvy = {
+        "T1": "Bílá 1", "T2": "Bílá 2", "T3": "Bílá 3", "T5": "Bílá 5", "T0": "Bílá 0", "TA": "Bílá Šipka", "TS": "Bílá Stopka", "TK": "Bílý Kolotoč", "TKR": "Bílý Král", "TH": "Bílé Hovno",
+        "R1": "Černá 1", "R2": "Černá 2", "R3": "Černá 3", "R5": "Černá 5", "R0": "Černá 0", "RA": "Černá Šipka", "RS": "Černá Stopka", "RK": "Černý Kolotoč", "RKR": "Černý Král", "RH": "Černé Hovno",
+        "TSM": "Smajlík 😊", "TLIZ": "Lízátko 🍭", "THL": "UFO Hlava 👽"
+    };
+
+    const zakladniHodnoty = {
+        "T1": 8, "T2": 3, "T3": 2, "T5": 1, "TK": 4, "TS": 4, "TA": 8, "T0": 1, "R0": 1, "TH": 2, "RH": 1,
+        "R1": 4, "R2": 3, "R3": 2, "R5": 1, "RA": 4, "RS": 1, "RK": 1, "TSM": 3, "THL": 1, "TLIZ": 1, "TKR": 2, "RKR": 2
+    };
+
+    document.querySelectorAll('.card-type-toggle').forEach(chk => {
+        const klic = chk.value;
+        const nazev = klicoveNazvy[klic] || klic;
+        
+        if (!chk.checked) {
+            vypnute.push(`   • ${nazev}\n`);
+        } else {
+            const inp = document.querySelector(`.card-count-input[data-card="${klic}"]`);
+            if (inp) {
+                const val = parseInt(inp.value, 10) || 0;
+                const std = zakladniHodnoty[klic] || 0;
+                if (val > std) {
+                    posilene.push(`   • ${nazev} (+${val - std} ks)\n`);
+                }
+            }
+        }
+    });
+
+    // Sestavíme fixní text, který bezpečně přežije jakékoliv resety herních kol
+    fixniPrehledNastaveniKaret = `\n⚙️ POČÁTEČNÍ KONFIGURACE BALÍČKU:\n`;
+    if (vypnute.length > 0) {
+        fixniPrehledNastaveniKaret += `🛑 Vypnuté karty v turnaji:\n${vypnute.join('')}`;
+    } else {
+        fixniPrehledNastaveniKaret += `✨ Žádné karty nebyly vypnuty.\n`;
+    }
+
+    if (posilene.length > 0) {
+        fixniPrehledNastaveniKaret += `🟢 Navíc přidané karty (posílené):\n${posilene.join('')}`;
+    } else {
+        fixniPrehledNastaveniKaret += `✨ Žádné karty nebyly uměle přidány navíc.\n`;
+    }
+    // =========================================================================
+
     // Kód bezpečně vytáhne číslo z opraveného selectu
     const selectHracu = document.getElementById('player-count-select');
     if (!selectHracu) {
@@ -1989,7 +2096,6 @@ function spustitHruZMenu() {
     // Předáme vybrané číslo vaší původní funkci, jako to dělala stará tlačítka
     startGameWithPlayers(zvolenyPocet);
 }
-
 function startGameWithPlayers(chosenCount) {
     numPlayers = chosenCount;
     playerScores = Array(numPlayers).fill(0);
@@ -2395,55 +2501,113 @@ prehrajZvukModalu();
 
     deck = [];
     const names = ['Jedla', 'Venca', 'Ríša', 'Rozi' , 'Viky'];
+
+    // =========================================================================
+    // 📊 1. OPRAVENÁ FUNKCE PRO NAČÍTÁNÍ HODNOT (Oprava párování stringů)
+    // =========================================================================
+    function ziskejPočetKusů(htmlKlic, vychoziPocet) {
+        const chk = document.querySelector(`.card-type-toggle[value="${htmlKlic}"]`);
+        // Pokud checkbox v HTML chybí nebo je odškrtnutý, karta má 0 kusů
+        if (chk && !chk.checked) return 0; 
+        
+        const inputMnozstvi = document.querySelector(`.card-count-input[data-card="${htmlKlic}"]`);
+        // Pokud má číselný vstup, vrátíme zadanou hodnotu z políčka, jinak výchozí počet
+        return inputMnozstvi ? parseInt(inputMnozstvi.value, 10) : vychoziPocet;
+    }
+
+    // Definice uživatelsky přívětivých názvů pro výpis do logu a alertu
+    const nazvyKaret = {
+        [T1]: "Bílá 1", [T2]: "Bílá 2", [T3]: "Bílá 3", [T5]: "Bílá 5", [T0]: "Bílá 0", [TA]: "Bílá Šipka", [TS]: "Bílá Stopka", [TK]: "Bílý Kolotoč", [TKR]: "Bílý Král", [TH]: "Bílé Hovno",
+        [R1]: "Černá 1", [R2]: "Černá 2", [R3]: "Černá 3", [R5]: "Černá 5", [R0]: "Černá 0", [RA]: "Černá Šipka", [RS]: "Černá Stopka", [RK]: "Černý Kolotoč", [RKR]: "Černý Král", [RH]: "Černé Hovno",
+        [TSM]: "Smajlík 😊", [TLIZ]: "Lízátko 🍭", [THL]: "UFO Hlava 👽"
+    };
     
-    // 3. DEFINICE SADY KARET (Dynamický počet TA)
+    // Vyčistíme staré seznamy pro logy a finální přehledy
+    vyřazenéKartyTurnaje = [];
+    přidanéKartyTurnaje = [];
+
+    // =========================================================================
+    // 📊 2. DEFINE VÝCHOZÍCH POČTŮ PRO POROVNÁNÍ ZELENÉHO PUNTÍKU
+    // =========================================================================
+    const vychoziPoctyKaret = {
+        [T1]: onesCount, [T2]: 3, [T3]: 2, [T5]: 1, [TK]: 4, [TS]: 4, [TA]: arrowsCount, 
+        [T0]: 1, [R0]: 1, [TH]: 2, [RH]: 1, [R1]: 4, [R2]: 3, [R3]: 2, [R5]: 1, 
+        [RA]: 4, [RS]: 1, [RK]: 1, [TSM]: 3, [THL]: 1, [TLIZ]: 1, [TKR]: 2, [RKR]: 2
+    };
+
+    // =========================================================================
+    // 📊 3. DYNAMICKÁ DEFINICE SADY KARET (OPRAVENÁ PRO ÚBYTKY KOL)
+    // =========================================================================
+    // Vypočítáme si aktuální úbytek (standardní osmička minus to, co napočítal turnaj)
+    let ubytekOnes = 8 - onesCount;
+    let ubytekArrows = 8 - arrowsCount;
+
     const sets = [
-        {t:T1,c:onesCount},{t:T2,c:3},{t:T3,c:2},{t:T5,c:1},{t:TK,c:4},{t:TS,c:4},
-        {t:TA,c:arrowsCount}, 
-        {t:T0,c:1},{t:R0,c:1},{t:TH,c:2},{t:RH,c:1},{t:R1,c:4},{t:R2,c:3},{t:R3,c:2},{t:R5,c:1},{t:RA,c:4},
-        {t:RS,c:1},{t:RK,c:1},{t:TSM,c:3},{t:THL,c:1},{t:TLIZ,c:1},{t:TKR,c:2},{t:RKR,c:2}
+        // 🔥 FIX: Vezme číslo z menu (např. 8 nebo 12) a odečte od něj úbytek pro dané kolo!
+        {t:T1, c: Math.max(0, ziskejPočetKusů("T1", 8) - ubytekOnes)},
+        {t:T2, c: ziskejPočetKusů("T2", 3)},
+        {t:T3, c: ziskejPočetKusů("T3", 2)},
+        {t:T5, c: ziskejPočetKusů("T5", 1)},
+        {t:TK, c: ziskejPočetKusů("TK", 4)},
+        {t:TS, c: ziskejPočetKusů("TS", 4)},
+        // 🔥 FIX: Vezme číslo z menu a odečte od něj úbytek pro dané kolo!
+        {t:TA, c: Math.max(0, ziskejPočetKusů("TA", 8) - ubytekArrows)}, 
+        {t:T0, c: ziskejPočetKusů("T0", 1)},
+        {t:R0, c: ziskejPočetKusů("R0", 1)},
+        {t:TH, c: ziskejPočetKusů("TH", 2)},
+        {t:RH, c: ziskejPočetKusů("RH", 1)},
+        {t:R1, c: ziskejPočetKusů("R1", 4)},
+        {t:R2, c: ziskejPočetKusů("R2", 3)},
+        {t:R3, c: ziskejPočetKusů("R3", 2)},
+        {t:R5, c: ziskejPočetKusů("R5", 1)},
+        {t:RA, c: ziskejPočetKusů("RA", 4)},
+        {t:RS, c: ziskejPočetKusů("RS", 1)},
+        {t:RK, c: ziskejPočetKusů("RK", 1)},
+        {t:TSM, c: ziskejPočetKusů("TSM", 3)},
+        {t:THL, c: ziskejPočetKusů("THL", 1)},
+        {t:TLIZ, c: ziskejPočetKusů("TLIZ", 1)},
+        {t:TKR, c: ziskejPočetKusů("TKR", 2)},
+        {t:RKR, c: ziskejPočetKusů("RKR", 2)}
     ];
 
-    // 4. ZBYTEK MÍCHÁNÍ A ROZDÁVÁNÍ
-    sets.forEach(s => { for(let i=0; i<s.c; i++) deck.push(s.t); });
-
-// =========================================================================
-    // 🎴 FILTR BALÍČKU PODLE ZAŠKRTNUTÝCH KARET NA UVÍTACÍ OBRAZOVCE
-    // =========================================================================
-    // Načteme stav checkboxů z uvítací obrazovky (pokud element neexistuje, defaultně kartu necháme)
-    const filterCisla   = document.querySelector('.card-type-toggle[value="cisla"]')?.checked ?? true;
-    const filterNula    = document.querySelector('.card-type-toggle[value="nula"]')?.checked ?? true;
-    const filterSipka   = document.querySelector('.card-type-toggle[value="sipka"]')?.checked ?? true;
-    const filterStop    = document.querySelector('.card-type-toggle[value="stop"]')?.checked ?? true;
-    const filterKolotoc = document.querySelector('.card-type-toggle[value="kolotoc"]')?.checked ?? true;
-    const filterKral    = document.querySelector('.card-type-toggle[value="kral"]')?.checked ?? true;
-    const filterHovno   = document.querySelector('.card-type-toggle[value="hovno"]')?.checked ?? true;
-    const filterSmajlik = document.querySelector('.card-type-toggle[value="smajlik"]')?.checked ?? true;
-    const filterLizatko = document.querySelector('.card-type-toggle[value="lizatko"]')?.checked ?? true;
-    const filterHlava   = document.querySelector('.card-type-toggle[value="hlava"]')?.checked ?? true;
-
-    // Přefiltrujeme naplněný deck a ponecháme pouze ty karty, které jsou povolené
-    deck = deck.filter(karta => {
-        // Kontrola podle tvých textových konstant (T1, R1, TS, RS atd.)
-        if (!filterCisla   && [T1, T2, T3, T5, R1, R2, R3, R5].includes(karta)) return false;
-        if (!filterNula    && [T0, R0].includes(karta)) return false;
-        if (!filterSipka   && [TA, RA].includes(karta)) return false;
-        if (!filterStop    && [TS, RS].includes(karta)) return false;
-        if (!filterKolotoc && [TK, RK].includes(karta)) return false;
-        if (!filterKral    && [TKR, RKR].includes(karta)) return false;
-        if (!filterHovno   && [TH, RH].includes(karta)) return false;
-        if (!filterSmajlik && karta === TSM) return false;
-        if (!filterLizatko && karta === TLIZ) return false;
-        if (!filterHlava   && karta === THL) return false;
-        return true; // Kartu si ponecháme
+    // Výpočet chybějících (červených) a přidaných (zelených) karet
+    sets.forEach(s => {
+        let standard = vychoziPoctyKaret[s.t] ?? 0;
+        
+        if (s.c === 0 && nazvyKaret[s.t]) {
+            vyřazenéKartyTurnaje.push(nazvyKaret[s.t]);
+        } else if (s.c > standard && nazvyKaret[s.t]) {
+            let rozdil = s.c - standard;
+            přidanéKartyTurnaje.push(`${nazvyKaret[s.t]} (+${rozdil} ks)`);
+        }
     });
 
-    // Pojistka: Pokud by hráč odškrtal úplně všechno, vrátíme mu tam aspoň základní čísla
+    // 4. ZBYTEK MÍCHÁNÍ A ROZDÁVÁNÍ (Tvůj původní nezměněný kód)
+    sets.forEach(s => { for(let i=0; i<s.c; i++) deck.push(s.t); });
+
+    // Nouzová pojistka: Kdyby měl balíček po změnách 0 karet
     if (deck.length === 0) {
-        sets.forEach(s => { if([T1, T2, T3, T5, R1, R2, R3, R5].includes(s.t)) { for(let i=0; i<s.c; i++) deck.push(s.t); } });
-        const chkCisla = document.querySelector('.card-type-toggle[value="cisla"]');
-        if (chkCisla) chkCisla.checked = true;
+        for(let i=0; i < onesCount; i++) deck.push(T1);
+        const chkT1 = document.querySelector('.card-type-toggle[value="T1"]');
+        if (chkT1) chkT1.checked = true;
+        vyřazenéKartyTurnaje = vyřazenéKartyTurnaje.filter(n => n !== "Bílá 1");
     }
+    
+    // Sestavení textů pro log
+    let textVyrazenych = vyřazenéKartyTurnaje.length > 0 ? vyřazenéKartyTurnaje.join(', ') : "Žádné (hra s plným balíčkem)";
+    let textPridanych = přidanéKartyTurnaje.length > 0 ? přidanéKartyTurnaje.join(', ') : "Žádné (základní počty)";
+
+    // ⚙️ KOMPLETNÍ OPRAVENÝ VÝPIS DO LOGU
+    addToLog(`⚙️ Kolo č. <b style="color: yellow;">${currentGameRound}</b>: V balíčku je aktuálně <b style="color: yellow;">${deck.length}</b> karet.`);
+    addToLog(`🛑 <b style="color: #ff4a4a;">Zcela chybějící karty v tomto kole:</b> ${textVyrazenych}`);
+    addToLog(`🟢 <b style="color: #4aff4a;">Navíc přidané karty v tomto kole:</b> ${textPridanych}`);
+
+    // Vizuální aktualizace počitadla na stole
+    if (typeof updateDeckDisplay === "function") { updateDeckDisplay(); }
+    else if (document.getElementById('deck-count')) { document.getElementById('deck-count').innerText = deck.length; }
+
+    // --- DOKONALÉ MÍCHÁNÍ BALÍČKU (Fisher-Yates) (Pokračuje tvůj starý kód...)
+
     
     // --- DOKONALÉ MÍCHÁNÍ BALÍČKU (Fisher-Yates) ---
     for (let i = deck.length - 1; i > 0; i--) {
@@ -4801,15 +4965,22 @@ function finishTurn(rev, keep) {
                         // Zde už pokračuje tvůj stávající konec s nápisem 📊 STATISTIKY TURNAJE: ...
                         finalniZprava += `📊 STATISTIKY TURNAJE:\n`;
                         finalniZprava += `⏱️ Celková délka turnaje: ${celkovyCasText}\n`;
- // =========================================================================
+
                         // ⏱️ 3. ČÁST: VLOŽENÍ HISTORIE JEDNOTLIVÝCH KOL DO PŘEHLEDU STATISTIK
-                        // =========================================================================
                         if (window.delkyJednotlivychKol && window.delkyJednotlivychKol.length > 0) {
                             finalniZprava += window.delkyJednotlivychKol.join("\n") + "\n";
                         }
                         finalniZprava += `🃏 Celkem zahráno karet: ${celkemZahranoKaret}\n`;
                         finalniZprava += `🎮 Odehráno herních kol: ${currentGameRound}\n`;
+                        
+                        // 🔥 SPOJOVACÍ MOST: Přilepíme text s konfigurací karet, který jsme uložili na startu
+                        if (typeof fixniPrehledNastaveniKaret !== "undefined" && fixniPrehledNastaveniKaret !== "") {
+                            finalniZprava += fixniPrehledNastaveniKaret;
+                        } else {
+                            finalniZprava += `\n⚙️ POČÁTEČNÍ KONFIGURACE BALÍČKU:\n✨ Turnaj odehrán s výchozím nastavením.\n`;
+                        }
 
+                        // Vykreslení do HTML vyskakovacího okna
                         const oknoText = document.getElementById('vyskakovaci-okno-text');
                         const oknoDialog = document.getElementById('vyskakovaci-okno');
                         
